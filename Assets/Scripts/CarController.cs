@@ -63,9 +63,11 @@ public class CarController : MonoBehaviour
     {
         moveDirection = playerInput.actions["Movement"].ReadValue<Vector2>();
 
+        bool isBreaking = playerInput.actions["Brakes"].ReadValue<float>() > 0.1f;
+
         //horizontalInput = Input.GetAxis(HORIZONTAL);
         //verticalInput = Input.GetAxis(VERTICAL);
-        isBreaking = Input.GetKey(KeyCode.Space);
+        //isBreaking = Input.GetKey(KeyCode.Space);
     }
 
     private void HandleMotor()
@@ -77,8 +79,8 @@ public class CarController : MonoBehaviour
             float targetSpeed = Mathf.Clamp(currentSpeed, 0f, maxSpeed);
             float speedFactor = targetSpeed / currentSpeed;
 
-            frontLeftWheelCollider.motorTorque *= speedFactor;
-            frontRightWheelCollider.motorTorque *= speedFactor;
+          frontLeftWheelCollider.motorTorque = moveDirection.y * motorForce;
+          frontRightWheelCollider.motorTorque = moveDirection.y * motorForce;
         }
         else
         {
