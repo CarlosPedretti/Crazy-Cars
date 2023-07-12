@@ -8,9 +8,10 @@ public class PowerUpData : ScriptableObject
     public float bulletForce = 20f;
     public float fireRate = 0.1f;
     public int bulletsPerBurst = 3;
-    public List<int> firePointIndices = new List<int>(); // Índices de los transforms de los puntos de origen del disparo
+    public int quantityOfMines;
+    public List<int> firePointIndices = new List<int>();
 
-    // Agrega más variables según tus necesidades
+
 }
 
 

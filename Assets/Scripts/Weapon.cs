@@ -1,70 +1,132 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Weapon : MonoBehaviour
 {
-    public Transform[] firePoints; // Puntos de origen del disparo
+    public Transform[] firePoints;
     public Transform[] firePointsAvaiable;
-    public GameObject bulletPrefab; // Prefabricado de la bala
-    public float bulletForce = 20f; // Fuerza de disparo de la bala
-    public float fireRate = 0.1f; // Tasa de disparo (balas por segundo)
-    public int bulletsPerBurst = 3; // Cantidad de balas por ráfaga
-    public float burstInterval = 0.2f; // Intervalo entre ráfagas
 
-    private float nextFireTime; // Tiempo del siguiente disparo
-    private bool isFiring; // Indicador de si se está disparando
+    public GameObject bulletPrefab;
+
+    public float bulletForce = 20f;
+    public float fireRate = 0.1f;
+    public int bulletsPerBurst = 3;
+    public float burstInterval = 0.2f;
+
+    public Transform[] minePoints;
+    public GameObject minePrefab;
+    public int quantityOfMines;
+
+    public float maxHeatLevel = 100f;
+    public float heatIncreasePerShot = 10f;
+    public float heatDecreaseRate = 5f;
+
+    private float nextFireTime;
+    private bool isFiring;
+    private bool isMining;
+
+    private float currentHeatLevel;
+
+    private PlayerInput playerInput;
+
+    [SerializeField] private FiringBar firingBar;
+
+    private void Awake()
+    {
+        playerInput = GetComponent<PlayerInput>();
+    }
 
     private void Start()
     {
-        nextFireTime = 0f; // Inicializar el tiempo del siguiente disparo a cero
-        isFiring = false; // Inicializar el estado de disparo a falso
+        nextFireTime = 0f;
+        isFiring = false;
+        isMining = false;
+        currentHeatLevel = 0f;
+        firingBar.SetMaxHeat(maxHeatLevel);
     }
 
     private void Update()
     {
-        if (Input.GetButtonDown("Fire1") && !isFiring) // Si el jugador presiona el botón de disparo y no está disparando actualmente
+        float FireInput = playerInput.actions["Shoot"].ReadValue<float>();
+        float MineInput = playerInput.actions["Mines"].ReadValue<float>();
+
+        firingBar.SetHeat(currentHeatLevel);
+
+        if (FireInput > 0 && !isFiring && !isMining && currentHeatLevel < maxHeatLevel)
         {
-            isFiring = true; // Activar el estado de disparo
-            nextFireTime = Time.time; // Establecer el tiempo del siguiente disparo al tiempo actual
-            FireBurst(); // Iniciar ráfaga de disparos
+            isFiring = true;
+            nextFireTime = Time.time;
+            FireBurst();
         }
 
-        if (Input.GetButtonUp("Fire1")) // Si el jugador suelta el botón de disparo
+        if (FireInput == 0)
         {
-            isFiring = false; // Desactivar el estado de disparo
+            isFiring = false;
+        }
+
+        if (MineInput > 0 && !isMining)
+        {
+            isMining = true;
+            Mine();
+        }
+
+        if (MineInput == 0)
+        {
+            isMining = false;
+        }
+
+        // Reduce el nivel de calentamiento con el tiempo
+        if (!isFiring)
+        {
+            currentHeatLevel -= heatDecreaseRate * Time.deltaTime;
+            currentHeatLevel = Mathf.Clamp(currentHeatLevel, 0f, maxHeatLevel);
         }
     }
 
     private void FireBurst()
     {
-        for (int i = 0; i < bulletsPerBurst; i++) // Disparar la cantidad de balas por ráfaga
+        if (currentHeatLevel + (bulletsPerBurst * heatIncreasePerShot) <= maxHeatLevel)
         {
-            for (int j = 0; j < firePoints.Length; j++) // Disparar desde cada punto de origen del disparo
+            for (int i = 0; i < bulletsPerBurst; i++)
             {
-                Shoot(firePoints[j]);
+                for (int j = 0; j < firePoints.Length; j++)
+                {
+                    Shoot(firePoints[j]);
+                    currentHeatLevel += heatIncreasePerShot;
+                }
             }
-        }
 
-        if (isFiring) // Si aún se está manteniendo presionado el botón de disparo
-        {
-            Invoke("FireBurst", burstInterval); // Esperar el intervalo entre ráfagas y disparar nuevamente
+            if (isFiring)
+            {
+                Invoke("FireBurst", burstInterval);
+            }
         }
     }
 
     public void Shoot(Transform firePoint)
     {
-        // Instanciar una bala en el firePoint
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
 
-        // Obtener el componente Rigidbody de la bala
         Rigidbody bulletRigidbody = bullet.GetComponent<Rigidbody>();
         if (bulletRigidbody != null)
         {
-            // Aplicar fuerza a la bala en la dirección del firePoint
             bulletRigidbody.AddForce(firePoint.forward * bulletForce, ForceMode.Impulse);
         }
 
         Destroy(bullet, 15f);
+    }
+
+    public void Mine()
+    {
+        if (quantityOfMines > 0)
+        {
+            Transform minePoint = minePoints[quantityOfMines % minePoints.Length];
+            GameObject mine = Instantiate(minePrefab, minePoint.position, minePoint.rotation);
+
+            quantityOfMines--;
+            currentHeatLevel += heatIncreasePerShot;
+        }
     }
 }

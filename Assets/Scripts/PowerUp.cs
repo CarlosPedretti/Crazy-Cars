@@ -20,6 +20,7 @@ public class PowerUp : MonoBehaviour
                 float originalBulletForce = weapon.bulletForce;
                 float originalFireRate = weapon.fireRate;
                 int originalBulletsPerBurst = weapon.bulletsPerBurst;
+                int originalQuantityOfMines = weapon.quantityOfMines;
                 Transform[] originalFirePoints = weapon.firePoints;
                 Transform[] originalFirePointAvaiable = weapon.firePointsAvaiable;
 
@@ -28,7 +29,9 @@ public class PowerUp : MonoBehaviour
                 weapon.bulletForce = powerUpData.bulletForce;
                 weapon.fireRate = powerUpData.fireRate;
                 weapon.bulletsPerBurst = powerUpData.bulletsPerBurst;
+                weapon.quantityOfMines = powerUpData.quantityOfMines;
                 weapon.firePoints = GetFirePointsFromIndices(originalFirePointAvaiable, powerUpData.firePointIndices);
+
 
 
                 if (revertChanges == null)
@@ -36,7 +39,7 @@ public class PowerUp : MonoBehaviour
                     //Programar la reversión de los cambios después del tiempo determinado
 
 
-                    revertChanges = StartCoroutine(RevertChanges(weapon, originalBulletForce, originalFireRate, originalBulletsPerBurst, originalFirePoints));
+                    revertChanges = StartCoroutine(RevertChanges(weapon, originalQuantityOfMines, originalBulletForce, originalFireRate, originalBulletsPerBurst, originalFirePoints));
 
                 }
                 //Desactivar MeshRenderder del PowerUp
@@ -49,7 +52,7 @@ public class PowerUp : MonoBehaviour
         }
     }
 
-    private IEnumerator RevertChanges(Weapon weapon, float originalBulletForce, float originalFireRate, int originalBulletsPerBurst, Transform[] originalFirePoints)
+    private IEnumerator RevertChanges(Weapon weapon, int originalQuantityOfMines, float originalBulletForce, float originalFireRate, int originalBulletsPerBurst, Transform[] originalFirePoints)
     {
         float elapsedTime = 0f;
 
@@ -65,6 +68,7 @@ public class PowerUp : MonoBehaviour
         weapon.fireRate = originalFireRate;
         weapon.bulletsPerBurst = originalBulletsPerBurst;
         weapon.firePoints = originalFirePoints;
+        weapon.quantityOfMines = originalQuantityOfMines;
 
 
         Destroy(gameObject);

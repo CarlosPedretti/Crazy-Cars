@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBar : MonoBehaviour
+public class FiringBar : MonoBehaviour
 {
     [SerializeField] private Slider slider;
     [SerializeField] private Gradient gradient;
@@ -21,19 +21,19 @@ public class HealthBar : MonoBehaviour
 
         transform.LookAt(transform.position + mainCamera.transform.rotation * Vector3.forward);
 
-        transform.position = new Vector3(transform.position.x, transform.parent.position.y + 3f, transform.position.z);
+        transform.position = new Vector3(transform.position.x, transform.parent.position.y + 2.5f, transform.position.z);
     }
 
-    public void SetHealth(int health)
+    public void SetHeat(float firingHeat)
     {
-        slider.value = health;
+        slider.value = firingHeat;
         fill.color = gradient.Evaluate(slider.normalizedValue);
     }
 
-    public void SetMaxHealth(int health)
+    public void SetMaxHeat(float firingHeat)
     {
-        slider.maxValue = health;
-        slider.value = health;
+        slider.maxValue = firingHeat;
+        slider.value = firingHeat;
         fill.color = gradient.Evaluate(1f);
     }
 }

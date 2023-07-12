@@ -53,6 +53,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Mines"",
+                    ""type"": ""Button"",
+                    ""id"": ""604f367e-c903-47fb-8e7e-21c90e7a31f1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -242,6 +251,39 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""90f429a4-544f-41f5-8f46-b320e439d58f"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Controller"",
+                    ""action"": ""Mines"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""36e16892-19dd-4474-9a89-69155efabe5a"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Mines"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c790b5a7-6495-464d-9fc4-00f00b39f049"",
+                    ""path"": ""<Keyboard>/numpadEnter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard2"",
+                    ""action"": ""Mines"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -287,6 +329,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_Brakes = m_Player.FindAction("Brakes", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
+        m_Player_Mines = m_Player.FindAction("Mines", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -351,6 +394,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Brakes;
     private readonly InputAction m_Player_Shoot;
+    private readonly InputAction m_Player_Mines;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -358,6 +402,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Brakes => m_Wrapper.m_Player_Brakes;
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
+        public InputAction @Mines => m_Wrapper.m_Player_Mines;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -376,6 +421,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
+            @Mines.started += instance.OnMines;
+            @Mines.performed += instance.OnMines;
+            @Mines.canceled += instance.OnMines;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -389,6 +437,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
+            @Mines.started -= instance.OnMines;
+            @Mines.performed -= instance.OnMines;
+            @Mines.canceled -= instance.OnMines;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -438,5 +489,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnBrakes(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
+        void OnMines(InputAction.CallbackContext context);
     }
 }

@@ -15,4 +15,5 @@ MonoBehaviour:
   bulletForce: 60
   fireRate: 0.1
   bulletsPerBurst: 1
+  quantityOfMines: 0
   firePointIndices: 000000000200000004000000

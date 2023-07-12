@@ -20,9 +20,7 @@ public class Bullet : MonoBehaviour
 
             if (health != null)
             {
-                // El jugador ha colisionado con otro jugador
-                // Puedes aplicar alguna lógica aquí, como reducir la vida del jugador
-                health.TakeDamage(damage); // Reducir 10 puntos de vida al jugador
+                health.TakeDamage(damage); 
             }
         }
 
