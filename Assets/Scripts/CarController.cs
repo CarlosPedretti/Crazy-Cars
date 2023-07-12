@@ -1,24 +1,35 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CarController : MonoBehaviour
 {
-    public Vector2 moveDirection;
+
+    public Vector2 moveDirection;  // = Vector2.zero;
+
     private PlayerInput playerInput;
 
-
-    //[SerializeField] GameObject centerOfMass;
-
-    [SerializeField] private float maxSpeed;
-    [SerializeField] private float acceleration;
-    [SerializeField] private float deceleration;
-    [SerializeField] private float reverseSpeed;
-    [SerializeField] private float brakeForce;
-    [SerializeField] private float maxSteerAngle;
-
-
+    private float horizontalInput;
+    private float verticalInput;
+    private float currentSteerAngle;
+    private float currentbreakForce;
 
     private bool isBreaking;
+
+    [SerializeField] float downForce = 0;
+
+    [SerializeField] private float maxForardSpeed;
+    [SerializeField] private float forwardSpeed;
+    [SerializeField] private float forwardAcceleration;
+    [SerializeField] private float stoppingAceleration;
+    [SerializeField] private float maxSpeed;
+
+
+    [SerializeField] private float motorForce;
+    [SerializeField] private float brakeForce;
+    [SerializeField] private float maxSteerAngle;
 
     [SerializeField] private WheelCollider frontLeftWheelCollider;
     [SerializeField] private WheelCollider frontRightWheelCollider;
@@ -26,7 +37,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private WheelCollider rearRightWheelCollider;
 
     [SerializeField] private Transform frontLeftWheelTransform;
-    [SerializeField] private Transform frontRightWheelTransform;
+    [SerializeField] private Transform frontRightWheeTransform;
     [SerializeField] private Transform rearLeftWheelTransform;
     [SerializeField] private Transform rearRightWheelTransform;
 
@@ -36,8 +47,8 @@ public class CarController : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody>();
-        // rb.centerOfMass = centerOfMass.transform.position;
     }
+
 
     private void FixedUpdate()
     {
@@ -45,68 +56,101 @@ public class CarController : MonoBehaviour
         HandleMotor();
         HandleSteering();
         UpdateWheels();
+        ApplyBreaking();
 
-        Vector3 localAngularVelocity = transform.InverseTransformDirection(rb.angularVelocity);
-        float antiRollForce = 1400; // Valor de fuerza contraria ajustable
-
-        float antiRollTorque = localAngularVelocity.x * antiRollForce;
-        rb.AddTorque(transform.up * -antiRollTorque);
+        rb.AddRelativeForce(Vector3.down * downForce, ForceMode.Force);
     }
 
-    private void GetInput()
+
+    public void GetInput()
     {
         moveDirection = playerInput.actions["Movement"].ReadValue<Vector2>();
+        isBreaking = playerInput.actions["Brakes"].ReadValue<float>() == 1;
+
     }
 
     private void HandleMotor()
     {
-        float speed = rb.velocity.magnitude;
+        rearLeftWheelCollider.motorTorque = moveDirection.y * forwardSpeed;
+        rearRightWheelCollider.motorTorque = moveDirection.y * forwardSpeed;
 
-
-        if (moveDirection.y > 0)
+        currentbreakForce = isBreaking ? brakeForce : 0f;
+        if (isBreaking)
         {
+            //Debug.Log("APPLY BREAKING()");
+            ApplyBreaking();
+        }
 
-            //Debug.Log("Acelerando adelante");
-            // Acelerar hacia adelante
-            if (speed < maxSpeed)
+        //Forward
+        if (moveDirection.y >= 0) 
+        {
+            if (forwardSpeed < maxForardSpeed) 
             {
-                //Debug.Log("Acelerando adelante");
-                rb.AddForce(transform.forward * acceleration * moveDirection.y);
+                forwardSpeed += Time.deltaTime * forwardAcceleration; 
+            }
+            else 
+            {
+                forwardSpeed = maxForardSpeed;
             }
         }
-        else if (moveDirection.y < 0)
+
+        //Stopping
+        if (moveDirection.y == 0) 
         {
-            // Acelerar en reversa
-            //Debug.Log("Acelerando atras");
-            if (speed > reverseSpeed)
+            if (forwardSpeed > 0) 
             {
-                //Debug.Log("Acelerando atras");
-                rb.AddForce(transform.forward * acceleration * moveDirection.y);
+                forwardSpeed -= Time.deltaTime * stoppingAceleration;
+
+                if (forwardSpeed < 0) 
+                {
+                    forwardSpeed = 0; 
+                }
+                Breaking();
+            }
+            else 
+            {
+                forwardSpeed = 0; 
             }
         }
-        else
+
+        //Reverse
+        if (moveDirection.y < 0) 
         {
-            // Desacelerar
-            /*float brakeSpeed = speed > deceleration ? deceleration : speed;
-            rb.AddForce(-rb.velocity.normalized * brakeSpeed);*/
+            if (forwardSpeed < maxForardSpeed) 
+            {
+                forwardSpeed += Time.deltaTime * forwardAcceleration; 
+            }
+            else 
+            {
+                forwardSpeed = maxForardSpeed;
+            }
+        }
+
     }
 
-        isBreaking = playerInput.actions["Brakes"].ReadValue<float>() > 0.1f;
-         ApplyBrakes();
-    }
 
-    private void ApplyBrakes()
+    private void ApplyBreaking()
     {
-        float currentBreakForce = isBreaking ? brakeForce : 0f;
-        frontRightWheelCollider.brakeTorque = currentBreakForce;
-        frontLeftWheelCollider.brakeTorque = currentBreakForce;
-        rearLeftWheelCollider.brakeTorque = currentBreakForce;
-        rearRightWheelCollider.brakeTorque = currentBreakForce;
+        frontRightWheelCollider.brakeTorque = currentbreakForce;
+        frontLeftWheelCollider.brakeTorque = currentbreakForce;
+        rearLeftWheelCollider.brakeTorque = currentbreakForce;
+        rearRightWheelCollider.brakeTorque = currentbreakForce;
+
+    }
+
+    private void Breaking()
+    {
+        frontRightWheelCollider.brakeTorque = brakeForce * 3;
+        frontLeftWheelCollider.brakeTorque = brakeForce * 3;
+        rearLeftWheelCollider.brakeTorque = brakeForce * 3;
+        rearRightWheelCollider.brakeTorque = brakeForce * 3;
+
+        //Debug.Log("Estoy frenando por medio de Breaking()");
     }
 
     private void HandleSteering()
     {
-        float currentSteerAngle = maxSteerAngle * moveDirection.x;
+        currentSteerAngle = maxSteerAngle * moveDirection.x; //Horizontal input solo aca
         frontLeftWheelCollider.steerAngle = currentSteerAngle;
         frontRightWheelCollider.steerAngle = currentSteerAngle;
     }
@@ -114,7 +158,7 @@ public class CarController : MonoBehaviour
     private void UpdateWheels()
     {
         UpdateSingleWheel(frontLeftWheelCollider, frontLeftWheelTransform);
-        UpdateSingleWheel(frontRightWheelCollider, frontRightWheelTransform);
+        UpdateSingleWheel(frontRightWheelCollider, frontRightWheeTransform);
         UpdateSingleWheel(rearRightWheelCollider, rearRightWheelTransform);
         UpdateSingleWheel(rearLeftWheelCollider, rearLeftWheelTransform);
     }
@@ -122,150 +166,9 @@ public class CarController : MonoBehaviour
     private void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform)
     {
         Vector3 pos;
-        Quaternion rot;
-        wheelCollider.GetWorldPose(out pos, out rot);
+        Quaternion rot
+        ;wheelCollider.GetWorldPose(out pos, out rot);
         wheelTransform.rotation = rot;
         wheelTransform.position = pos;
     }
 }
-
-
-
-
-
-
-/*using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.InputSystem;
-
-public class CarController : MonoBehaviour
-{
-    public Vector2 moveDirection;
-    private PlayerInput playerInput;
-
-    [SerializeField] private float maxSpeed;
-    [SerializeField] private float minSpeed;
-    [SerializeField] private float reductionSpeed;
-    [SerializeField] private float Speed;
-    [SerializeField] private float reverseSpeed;
-
-    [SerializeField] private float brakeForce;
-    [SerializeField] private float maxSteerAngle;
-
-    private float currentbreakForce;
-    private bool isBreaking;
-
-
-
-    [SerializeField] private WheelCollider frontLeftWheelCollider;
-    [SerializeField] private WheelCollider frontRightWheelCollider;
-    [SerializeField] private WheelCollider rearLeftWheelCollider;
-    [SerializeField] private WheelCollider rearRightWheelCollider;
-
-    [SerializeField] private Transform frontLeftWheelTransform;
-    [SerializeField] private Transform frontRightWheelTransform;
-    [SerializeField] private Transform rearLeftWheelTransform;
-    [SerializeField] private Transform rearRightWheelTransform;
-
-    private void Awake()
-    {
-        playerInput = GetComponent<PlayerInput>();
-    }
-
-    private void FixedUpdate()
-    {
-        GetInput();
-        HandleMotor();
-        HandleSteering();
-        UpdateWheels();
-    }
-
-    private void GetInput()
-    {
-        moveDirection = playerInput.actions["Movement"].ReadValue<Vector2>();
-
-        if (moveDirection.y == 0)
-        {
-            // Reduce la velocidad en la dirección actual.
-            Vector3 currentVelocity = GetComponent<Rigidbody>().velocity;
-            float currentSpeed = currentVelocity.magnitude;
-            Vector3 currentDirection = currentVelocity.normalized;
-
-            GetComponent<Rigidbody>().velocity = currentDirection * Mathf.Lerp(currentSpeed, 0f, Time.deltaTime * reductionSpeed);
-        }
-    }
-
-    private void HandleMotor()
-    {
-        //Debug.Log("Velocidad: " + currentSpeed); 
-        // Si la dirección de movimiento es hacia adelante (positiva) y la velocidad actual es menor que la velocidad máxima
-        if (moveDirection.y > 0)
-        {
-            // Aplicar fuerza de aceleración
-            frontLeftWheelCollider.motorTorque = 1 * Mathf.Abs(Speed);
-            frontRightWheelCollider.motorTorque = 1 * Mathf.Abs(Speed);
-
-            Debug.Log("W BIEN");
-
-        }
-
-        if (moveDirection.y < 0)
-        {
-            // Aplicar fuerza de aceleración en reversa
-            frontLeftWheelCollider.motorTorque = -1 * Mathf.Abs(reverseSpeed);
-            frontRightWheelCollider.motorTorque = -1 * Mathf.Abs(reverseSpeed);
-
-            Debug.Log("S BIEN");
-
-        }
-
-        currentbreakForce = isBreaking ? brakeForce : 0f;
-        ApplyBrakes();
-
-        /* // Aplicar freno si se está presionando el botón de freno
-         if (playerInput.actions["Brakes"].ReadValue<float>() > 0.1f)
-         {
-             ApplyBrakes(brakeForce);
-         }
-         else
-         {
-             ApplyBrakes(0f);
-         }*/
-/* }
-
- private void ApplyBrakes()
- {
-     frontRightWheelCollider.brakeTorque = currentbreakForce;
-     frontLeftWheelCollider.brakeTorque = currentbreakForce;
-     rearLeftWheelCollider.brakeTorque = currentbreakForce;
-     rearRightWheelCollider.brakeTorque = currentbreakForce;
- }
-
- private void HandleSteering()
- {
-     float currentSteerAngle = maxSteerAngle * moveDirection.x;
-     frontLeftWheelCollider.steerAngle = currentSteerAngle;
-     frontRightWheelCollider.steerAngle = currentSteerAngle;
- }
-
- private void UpdateWheels()
- {
-     UpdateSingleWheel(frontLeftWheelCollider, frontLeftWheelTransform);
-     UpdateSingleWheel(frontRightWheelCollider, frontRightWheelTransform);
-     UpdateSingleWheel(rearRightWheelCollider, rearRightWheelTransform);
-     UpdateSingleWheel(rearLeftWheelCollider, rearLeftWheelTransform);
- }
-
- private void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform)
- {
-     Vector3 pos;
-     Quaternion rot;
-     wheelCollider.GetWorldPose(out pos, out rot);
-     wheelTransform.rotation = rot;
-     wheelTransform.position = pos;
- }
-}
-
-*/

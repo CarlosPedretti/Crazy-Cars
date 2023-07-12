@@ -190,11 +190,33 @@
                 },
                 {
                     "name": "",
-                    "id": "c68435b3-4d7b-4571-8e63-3e2ca84da676",
-                    "path": "",
+                    "id": "fe500956-26ee-4b9e-a653-0cc0280df4a4",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Controller",
+                    "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "adda57c9-f4fd-4733-8828-3a2922a5f0d2",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5138c98e-08ad-4622-ae77-71ffadfb9dde",
+                    "path": "<Keyboard>/numpadPeriod",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard2",
                     "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
