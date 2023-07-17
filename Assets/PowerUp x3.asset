@@ -10,10 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6aae429dd9c646e4dbefa48a9bf0b95c, type: 3}
-  m_Name: PowerUp x2
+  m_Name: PowerUp x3
   m_EditorClassIdentifier: 
   bulletForce: 60
   fireRate: 0.1
   bulletsPerBurst: 1
   quantityOfMines: 0
-  firePointIndices: 0100000003000000
+  maxHeatLevel: 400
+  heatIncreasePerShot: 5
+  heatDecreaseRate: 45
+  firePointIndices: 000000000200000004000000

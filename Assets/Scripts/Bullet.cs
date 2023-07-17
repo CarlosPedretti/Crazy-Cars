@@ -5,6 +5,8 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public int damage;
+    public GameObject hitPrefab;
+    public float hitPrefabDestroyTime;
 
 
     private void Start()
@@ -20,10 +22,13 @@ public class Bullet : MonoBehaviour
 
             if (health != null)
             {
-                health.TakeDamage(damage); 
+                health.TakeDamage(damage);
             }
-        }
 
+            Quaternion hitRotation = Quaternion.LookRotation(-transform.forward);
+            GameObject hitInstance = Instantiate(hitPrefab, transform.position, hitRotation);
+            Destroy(hitInstance, hitPrefabDestroyTime);
+        }
 
         Destroy(gameObject);
     }

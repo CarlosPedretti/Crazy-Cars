@@ -11,8 +11,12 @@ public class Health : MonoBehaviour
     public GameObject deathPrefab;
     public float deathPrefabDestroyTime;
     public float playerDestroyDelay;
+    public float dieDelay;
 
     [SerializeField] private HealthBar healthBar;
+
+    public ParticleSystem smokeParticles;
+    public ParticleSystem fireParticles;
 
 
     void Start()
@@ -21,6 +25,7 @@ public class Health : MonoBehaviour
         healthBar.SetMaxHealth(maxHealth);
     }
 
+
     public void TakeDamage(int damageAmount)
     {
         currentHealth -= damageAmount;
@@ -28,7 +33,20 @@ public class Health : MonoBehaviour
         if (currentHealth <= 0)
         {
             Debug.Log("Vehiculo destruido");
-            Die();
+            Invoke("Die", dieDelay);
+        }
+    }
+
+    public void TakeHeal(int healAmount)
+    {
+        currentHealth += healAmount;
+
+        healthBar.SetHealth(currentHealth);
+
+        if (currentHealth >= maxHealth)
+        {
+            currentHealth = maxHealth;
+
         }
     }
 
@@ -48,6 +66,70 @@ public class Health : MonoBehaviour
     private void DestroyPlayer()
     {
        Destroy(gameObject);
+    }
+
+
+    void Update()
+    {
+        float smokeThreshold = maxHealth * 0.35f;
+        float fireThreshold = maxHealth * 0.1f;
+
+        if (currentHealth <= smokeThreshold)
+        {
+            ActivateSmokeParticles();
+        }
+        else
+        {
+            DesactivateSmokeParticles();
+        }
+
+        if (currentHealth <= fireThreshold)
+        {
+            ActivateFireParticles();
+        }
+        else
+        {
+            DesactivateFireParticles();
+        }
+    }
+
+    private void ActivateFireParticles()
+    {
+
+        if (fireParticles != null && !fireParticles.isPlaying)
+        {
+            fireParticles.Play();
+        }
+    }
+
+    private void DesactivateFireParticles()
+    {
+
+        if (fireParticles != null && fireParticles.isPlaying)
+        {
+            fireParticles.Stop();
+            //fireParticles.Clear();
+        }
+    }
+
+    private void ActivateSmokeParticles()
+    {
+
+      if (smokeParticles != null && !smokeParticles.isPlaying)
+      {
+        smokeParticles.Play();
+      }
+    }
+
+    private void DesactivateSmokeParticles()
+    {
+
+      if (smokeParticles != null && smokeParticles.isPlaying)
+      {
+        smokeParticles.Stop();
+        //smokeParticles.Clear();
+         
+      }
     }
 
 

@@ -19,13 +19,18 @@ public class Weapon : MonoBehaviour
     public GameObject minePrefab;
     public int quantityOfMines;
 
-    public float maxHeatLevel = 100f;
+    public float maxHeatLevel = 400f;
     public float heatIncreasePerShot = 10f;
-    public float heatDecreaseRate = 5f;
+    public float heatDecreaseRate = 45f;
 
     private float nextFireTime;
     private bool isFiring;
     private bool isMining;
+
+    public ParticleSystem overheatingParticles;
+
+    public GameObject flashPrefab;
+    public float flashPrefabDestroyTime;
 
     private float currentHeatLevel;
 
@@ -83,7 +88,41 @@ public class Weapon : MonoBehaviour
             currentHeatLevel -= heatDecreaseRate * Time.deltaTime;
             currentHeatLevel = Mathf.Clamp(currentHeatLevel, 0f, maxHeatLevel);
         }
+
+        float heatThreshold = maxHeatLevel * 0.8f;
+
+        if (currentHeatLevel >= heatThreshold)
+        {
+            ActivateOverheatingParticles();
+        }
+        else
+        {
+            DeactivateOverheatingParticles();
+        }
+
+
     }
+
+
+    private void ActivateOverheatingParticles()
+    {
+
+        if (overheatingParticles != null && !overheatingParticles.isPlaying)
+        {
+            overheatingParticles.Play();
+        }
+    }
+
+    private void DeactivateOverheatingParticles()
+    {
+
+        if (overheatingParticles != null && overheatingParticles.isPlaying)
+        {
+            overheatingParticles.Stop();
+            //overheatingParticles.Clear();
+        }
+    }
+
 
     private void FireBurst()
     {
@@ -114,6 +153,9 @@ public class Weapon : MonoBehaviour
         {
             bulletRigidbody.AddForce(firePoint.forward * bulletForce, ForceMode.Impulse);
         }
+
+        GameObject flashInstance = Instantiate(flashPrefab, firePoint.position, firePoint.rotation);
+        Destroy(flashInstance, flashPrefabDestroyTime);
 
         Destroy(bullet, 15f);
     }

@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aae429dd9c646e4dbefa48a9bf0b95c, type: 3}
   m_Name: PowerUp Mine
   m_EditorClassIdentifier: 
-  bulletForce: 20
+  bulletForce: 60
   fireRate: 0.1
   bulletsPerBurst: 1
   quantityOfMines: 3
+  maxHeatLevel: 400
+  heatIncreasePerShot: 10
+  heatDecreaseRate: 45
   firePointIndices: 00000000

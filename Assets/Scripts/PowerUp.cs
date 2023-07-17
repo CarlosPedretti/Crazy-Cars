@@ -9,21 +9,31 @@ public class PowerUp : MonoBehaviour
     public float powerUpDuration = 10f;
     private Coroutine revertChanges;
 
+    private bool valuesSaved = false;
+
+    private float originalBulletForce;
+    private float originalFireRate;
+    private int originalBulletsPerBurst;
+    private int originalQuantityOfMines;
+    private float originalMaxHeatLevel;
+    private float originalHeatIncreasePerShot;
+    private float originalHeatDecreaseRate;
+    private Transform[] originalFirePoints;
+    private Transform[] originalFirePointAvaiable;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             Weapon weapon = other.GetComponent<Weapon>();
+
             if (weapon != null)
             {
-                //Guardar los valores originales del componente Weapon
-                float originalBulletForce = weapon.bulletForce;
-                float originalFireRate = weapon.fireRate;
-                int originalBulletsPerBurst = weapon.bulletsPerBurst;
-                int originalQuantityOfMines = weapon.quantityOfMines;
-                Transform[] originalFirePoints = weapon.firePoints;
-                Transform[] originalFirePointAvaiable = weapon.firePointsAvaiable;
-
+                if (!valuesSaved) // Verificar si los valores originales ya se han guardado
+                {
+                    SaveOriginalValues(weapon);
+                    valuesSaved = true; // Marcar que los valores originales se han guardado
+                }
 
                 //Aplicar los cambios del PowerUp al componente Weapon
                 weapon.bulletForce = powerUpData.bulletForce;
@@ -31,6 +41,9 @@ public class PowerUp : MonoBehaviour
                 weapon.bulletsPerBurst = powerUpData.bulletsPerBurst;
                 weapon.quantityOfMines = powerUpData.quantityOfMines;
                 weapon.firePoints = GetFirePointsFromIndices(originalFirePointAvaiable, powerUpData.firePointIndices);
+                weapon.maxHeatLevel = powerUpData.maxHeatLevel;
+                weapon.heatIncreasePerShot = powerUpData.heatIncreasePerShot;
+                weapon.heatDecreaseRate = powerUpData.heatDecreaseRate;
 
 
 
@@ -39,20 +52,35 @@ public class PowerUp : MonoBehaviour
                     //Programar la reversión de los cambios después del tiempo determinado
 
 
-                    revertChanges = StartCoroutine(RevertChanges(weapon, originalQuantityOfMines, originalBulletForce, originalFireRate, originalBulletsPerBurst, originalFirePoints));
+                    revertChanges = StartCoroutine(RevertChanges(weapon, originalQuantityOfMines, originalMaxHeatLevel, originalHeatIncreasePerShot, originalHeatDecreaseRate, originalBulletForce, originalFireRate, originalBulletsPerBurst, originalFirePoints));
 
                 }
                 //Desactivar MeshRenderder del PowerUp
-                MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-                if (meshRenderer != null)
+                MeshRenderer[] meshRenderers = GetComponentsInChildren<MeshRenderer>();
+                foreach (MeshRenderer childRenderer in meshRenderers)
                 {
-                    meshRenderer.enabled = false;
+                    childRenderer.enabled = false;
                 }
             }
         }
     }
 
-    private IEnumerator RevertChanges(Weapon weapon, int originalQuantityOfMines, float originalBulletForce, float originalFireRate, int originalBulletsPerBurst, Transform[] originalFirePoints)
+
+    private void SaveOriginalValues(Weapon weapon)
+    {
+        // Guardar los valores originales del componente Weapon
+        originalBulletForce = weapon.bulletForce;
+        originalFireRate = weapon.fireRate;
+        originalBulletsPerBurst = weapon.bulletsPerBurst;
+        originalQuantityOfMines = weapon.quantityOfMines;
+        originalMaxHeatLevel = weapon.maxHeatLevel;
+        originalHeatIncreasePerShot = weapon.heatIncreasePerShot;
+        originalHeatDecreaseRate = weapon.heatDecreaseRate;
+        originalFirePoints = weapon.firePoints;
+        originalFirePointAvaiable = weapon.firePointsAvaiable;
+    }
+
+    private IEnumerator RevertChanges(Weapon weapon, int originalQuantityOfMines, float originalMaxHeatLevel, float originalHeatIncreasePerShot, float originalHeatDecreaseRate, float originalBulletForce, float originalFireRate, int originalBulletsPerBurst, Transform[] originalFirePoints)
     {
         float elapsedTime = 0f;
 
@@ -69,7 +97,9 @@ public class PowerUp : MonoBehaviour
         weapon.bulletsPerBurst = originalBulletsPerBurst;
         weapon.firePoints = originalFirePoints;
         weapon.quantityOfMines = originalQuantityOfMines;
-
+        weapon.maxHeatLevel = originalMaxHeatLevel;
+        weapon.heatIncreasePerShot = originalHeatIncreasePerShot;
+        weapon.heatDecreaseRate = originalHeatDecreaseRate;
 
         Destroy(gameObject);
     }
