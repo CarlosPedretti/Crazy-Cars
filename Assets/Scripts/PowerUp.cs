@@ -21,6 +21,14 @@ public class PowerUp : MonoBehaviour
     private Transform[] originalFirePoints;
     private Transform[] originalFirePointAvaiable;
 
+    private PowerUpSpawner spawner;
+
+    public void SetSpawner(PowerUpSpawner powerUpSpawner)
+    {
+        spawner = powerUpSpawner;
+    }
+
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -29,10 +37,10 @@ public class PowerUp : MonoBehaviour
 
             if (weapon != null)
             {
-                if (!valuesSaved) // Verificar si los valores originales ya se han guardado
+                if (!valuesSaved) 
                 {
                     SaveOriginalValues(weapon);
-                    valuesSaved = true; // Marcar que los valores originales se han guardado
+                    valuesSaved = true; 
                 }
 
                 //Aplicar los cambios del PowerUp al componente Weapon
@@ -49,19 +57,25 @@ public class PowerUp : MonoBehaviour
 
                 if (revertChanges == null)
                 {
-                    //Programar la reversión de los cambios después del tiempo determinado
+
 
 
                     revertChanges = StartCoroutine(RevertChanges(weapon, originalQuantityOfMines, originalMaxHeatLevel, originalHeatIncreasePerShot, originalHeatDecreaseRate, originalBulletForce, originalFireRate, originalBulletsPerBurst, originalFirePoints));
 
                 }
-                //Desactivar MeshRenderder del PowerUp
+
                 MeshRenderer[] meshRenderers = GetComponentsInChildren<MeshRenderer>();
                 foreach (MeshRenderer childRenderer in meshRenderers)
                 {
                     childRenderer.enabled = false;
                 }
             }
+
+            if (spawner != null)
+            {
+                spawner.PowerUpCollected(gameObject);
+            }
+
         }
     }
 

@@ -19,4 +19,4 @@ MonoBehaviour:
   maxHeatLevel: 400
   heatIncreasePerShot: 7
   heatDecreaseRate: 45
-  firePointIndices: 0100000003000000
+  firePointIndices: 0200000003000000

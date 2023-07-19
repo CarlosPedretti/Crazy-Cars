@@ -18,6 +18,7 @@ public class PowerUpData : ScriptableObject
     public List<int> firePointIndices = new List<int>();
 
 
+
 }
 
 

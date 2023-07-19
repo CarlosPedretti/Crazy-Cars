@@ -124,7 +124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   powerUpData: {fileID: 11400000, guid: da107c24235fde946b30b63e379b3926, type: 2}
-  powerUpDuration: 10
+  powerUpDuration: 13
 --- !u!1 &4800517704264135559
 GameObject:
   m_ObjectHideFlags: 0
