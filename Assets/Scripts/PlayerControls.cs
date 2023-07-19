@@ -62,6 +62,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Select"",
+                    ""type"": ""Button"",
+                    ""id"": ""bff14ecd-0265-4fef-85f8-0fc0a60426d6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -284,6 +293,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Mines"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1b4b13f2-c06d-4392-8dc6-d0710d9ddade"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -330,6 +350,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_Brakes = m_Player.FindAction("Brakes", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
         m_Player_Mines = m_Player.FindAction("Mines", throwIfNotFound: true);
+        m_Player_Select = m_Player.FindAction("Select", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -395,6 +416,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Brakes;
     private readonly InputAction m_Player_Shoot;
     private readonly InputAction m_Player_Mines;
+    private readonly InputAction m_Player_Select;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -403,6 +425,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Brakes => m_Wrapper.m_Player_Brakes;
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
         public InputAction @Mines => m_Wrapper.m_Player_Mines;
+        public InputAction @Select => m_Wrapper.m_Player_Select;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -424,6 +447,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Mines.started += instance.OnMines;
             @Mines.performed += instance.OnMines;
             @Mines.canceled += instance.OnMines;
+            @Select.started += instance.OnSelect;
+            @Select.performed += instance.OnSelect;
+            @Select.canceled += instance.OnSelect;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -440,6 +466,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Mines.started -= instance.OnMines;
             @Mines.performed -= instance.OnMines;
             @Mines.canceled -= instance.OnMines;
+            @Select.started -= instance.OnSelect;
+            @Select.performed -= instance.OnSelect;
+            @Select.canceled -= instance.OnSelect;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -490,5 +519,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnBrakes(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
         void OnMines(InputAction.CallbackContext context);
+        void OnSelect(InputAction.CallbackContext context);
     }
 }

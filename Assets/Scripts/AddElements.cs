@@ -12,7 +12,7 @@ public class AddElements : MonoBehaviour
     private GameObject[] elements;
 
 
-    void Start()
+    void Awake()
     {
 
         cinemachineTargetGroup = GetComponent<CinemachineTargetGroup>();
