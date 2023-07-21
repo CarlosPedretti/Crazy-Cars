@@ -7,7 +7,13 @@ using UnityEngine.InputSystem;
 public class CarController : MonoBehaviour
 {
 
-    public Vector2 moveDirection;  // = Vector2.zero;
+    //public Vector2 moveDirection;  // = Vector2.zero;
+    private Vector2 moveDirection;  // = Vector2.zero;
+
+    private Vector2 inputVector;  // = Vector2.zero;
+    private float inputBraking;
+    private float inputAcceleration;
+
 
     private PlayerInput playerInput;
 
@@ -16,7 +22,10 @@ public class CarController : MonoBehaviour
     private float currentSteerAngle;
     private float currentbreakForce;
 
+    private float currentAcceleration;
+
     private bool isBreaking;
+    private bool isAccelerating;
 
     [SerializeField] float downForce = 0;
 
@@ -49,6 +58,18 @@ public class CarController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    public void SetInputVector(Vector2 direction)
+    {
+        inputVector = direction;
+    }
+    public void SetInputBrakes(float brakes)
+    {
+        inputBraking = brakes;
+    }
+    public void SetInputAcceleration(float acceleration)
+    {
+        inputAcceleration = acceleration;
+    }
 
     private void FixedUpdate()
     {
@@ -64,15 +85,26 @@ public class CarController : MonoBehaviour
 
     public void GetInput()
     {
-        moveDirection = playerInput.actions["Movement"].ReadValue<Vector2>();
-        isBreaking = playerInput.actions["Brakes"].ReadValue<float>() == 1;
+        //moveDirection = playerInput.actions["Movement"].ReadValue<Vector2>();
+        //Debug.Log("Recibiendo Input:" + moveDirection);
+        moveDirection = inputVector;
+        //isBreaking = playerInput.actions["Brakes"].ReadValue<float>() == 1;
+        //isAccelerating = playerInput.actions["Acceleration"].ReadValue<float>() == 1;
+        isBreaking = inputBraking == 1.0f;
+        isAccelerating = inputAcceleration == 1.0f;
 
     }
 
     private void HandleMotor()
     {
-        rearLeftWheelCollider.motorTorque = moveDirection.y * forwardSpeed;
-        rearRightWheelCollider.motorTorque = moveDirection.y * forwardSpeed;
+        currentAcceleration = isAccelerating ? forwardSpeed : 0f;
+
+        Debug.Log("ForwardSpeed = " + forwardSpeed);
+        Debug.Log("isAccelerating = " + isAccelerating);
+
+
+        rearLeftWheelCollider.motorTorque = moveDirection.y * currentAcceleration;
+        rearRightWheelCollider.motorTorque = moveDirection.y * currentAcceleration;
 
         currentbreakForce = isBreaking ? brakeForce : 0f;
         if (isBreaking)

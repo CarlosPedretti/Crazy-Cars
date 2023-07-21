@@ -8,6 +8,9 @@ public class Weapon : MonoBehaviour
     public Transform[] firePoints;
     public Transform[] firePointsAvaiable;
 
+    private float inputShooting;
+    private float inputMining;
+
     public GameObject bulletPrefab;
 
     public float bulletForce = 20f;
@@ -52,10 +55,23 @@ public class Weapon : MonoBehaviour
         firingBar.SetMaxHeat(maxHeatLevel);
     }
 
+    public void SetInputShoot(float shoot)
+    {
+        inputShooting = shoot;
+
+    }
+    public void SetInputMine(float mine)
+    {
+        inputMining = mine;
+    }
+
     private void Update()
     {
-        float FireInput = playerInput.actions["Shoot"].ReadValue<float>();
-        float MineInput = playerInput.actions["Mines"].ReadValue<float>();
+        //float FireInput = playerInput.actions["Shoot"].ReadValue<float>();
+        //float MineInput = playerInput.actions["Mines"].ReadValue<float>();
+
+        float FireInput = inputShooting;
+        float MineInput = inputMining;
 
         firingBar.SetHeat(currentHeatLevel);
 

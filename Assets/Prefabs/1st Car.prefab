@@ -401,6 +401,7 @@ GameObject:
   - component: {fileID: 128172135367860764}
   - component: {fileID: 1447637262909876072}
   - component: {fileID: 2092555823946099887}
+  - component: {fileID: 5340860006355036727}
   m_Layer: 0
   m_Name: 1st Car
   m_TagString: Player
@@ -442,7 +443,7 @@ Transform:
   - {fileID: 7110363220967058699}
   - {fileID: 841583272245200644}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &7389598674555993122
 Rigidbody:
@@ -506,7 +507,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 0
-  deathPrefab: {fileID: 0}
+  deathPrefab: {fileID: 6582484134026709455, guid: ecffeb4b99f94434f8973a1afb975df8,
+    type: 3}
   deathPrefabDestroyTime: 4
   playerDestroyDelay: 0.1
   dieDelay: 0
@@ -541,7 +543,8 @@ MonoBehaviour:
   burstInterval: 0.2
   minePoints:
   - {fileID: 3532114314677885467}
-  minePrefab: {fileID: 0}
+  minePrefab: {fileID: 1868823197196923832, guid: 3651da419a5b3d34db02774c4ab392f5,
+    type: 3}
   quantityOfMines: 0
   maxHeatLevel: 400
   heatIncreasePerShot: 10
@@ -563,7 +566,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b78b07a013509c458fa2534b7ce52d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDirection: {x: 0, y: 0}
   downForce: 0
   maxForardSpeed: 8000
   forwardSpeed: 0
@@ -588,7 +590,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1262859399106749440}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
@@ -624,6 +626,19 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &5340860006355036727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1262859399106749440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcbdf3f0af457ad46b3a768f556f5565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerMesh: {fileID: 7285046191079516697}
 --- !u!1 &1585122419549218061
 GameObject:
   m_ObjectHideFlags: 0
