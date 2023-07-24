@@ -43,6 +43,14 @@ public class PowerUp : MonoBehaviour
                     valuesSaved = true; 
                 }
 
+                if (revertChanges == null) // Comprueba si revertChanges no está en ejecución
+                {
+                    // Aplicar los cambios del PowerUp al componente Weapon
+                    // Resto del código existente...
+
+                    revertChanges = StartCoroutine(RevertChanges(weapon, originalQuantityOfMines, originalMaxHeatLevel, originalHeatIncreasePerShot, originalHeatDecreaseRate, originalBulletForce, originalFireRate, originalBulletsPerBurst, originalFirePoints));
+                }
+
                 //Aplicar los cambios del PowerUp al componente Weapon
                 weapon.bulletForce = powerUpData.bulletForce;
                 weapon.fireRate = powerUpData.fireRate;
@@ -54,15 +62,6 @@ public class PowerUp : MonoBehaviour
                 weapon.heatDecreaseRate = powerUpData.heatDecreaseRate;
 
 
-
-                if (revertChanges == null)
-                {
-
-
-
-                    revertChanges = StartCoroutine(RevertChanges(weapon, originalQuantityOfMines, originalMaxHeatLevel, originalHeatIncreasePerShot, originalHeatDecreaseRate, originalBulletForce, originalFireRate, originalBulletsPerBurst, originalFirePoints));
-
-                }
 
                 MeshRenderer[] meshRenderers = GetComponentsInChildren<MeshRenderer>();
                 foreach (MeshRenderer childRenderer in meshRenderers)
@@ -105,17 +104,20 @@ public class PowerUp : MonoBehaviour
             yield return null;
         }
 
-        //Revertir los cambios en el componente Weapon
-        weapon.bulletForce = originalBulletForce;
-        weapon.fireRate = originalFireRate;
-        weapon.bulletsPerBurst = originalBulletsPerBurst;
-        weapon.firePoints = originalFirePoints;
-        weapon.quantityOfMines = originalQuantityOfMines;
-        weapon.maxHeatLevel = originalMaxHeatLevel;
-        weapon.heatIncreasePerShot = originalHeatIncreasePerShot;
-        weapon.heatDecreaseRate = originalHeatDecreaseRate;
+        // Asegúrate de que los cambios solo se reviertan si efectivamente se había activado el Coroutine
+        if (revertChanges != null)
+        {
+            weapon.bulletForce = originalBulletForce;
+            weapon.fireRate = originalFireRate;
+            weapon.bulletsPerBurst = originalBulletsPerBurst;
+            weapon.firePoints = originalFirePoints;
+            weapon.quantityOfMines = originalQuantityOfMines;
+            weapon.maxHeatLevel = originalMaxHeatLevel;
+            weapon.heatIncreasePerShot = originalHeatIncreasePerShot;
+            weapon.heatDecreaseRate = originalHeatDecreaseRate;
 
-        Destroy(gameObject);
+            Destroy(gameObject);
+        }
     }
 
     private Transform[] GetFirePointsFromIndices(Transform[] originalFirePointAvaiable, List<int> firePointIndices)

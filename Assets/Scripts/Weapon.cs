@@ -41,18 +41,13 @@ public class Weapon : MonoBehaviour
 
     [SerializeField] private FiringBar firingBar;
 
-    private void Awake()
-    {
-        playerInput = GetComponent<PlayerInput>();
-    }
+    public GameManager gameManager;
 
-    private void Start()
+    private PlayerConfiguration playerConfig; // Referencia al PlayerConfiguration del jugador
+
+    public void SetPlayerConfiguration(PlayerConfiguration config)
     {
-        nextFireTime = 0f;
-        isFiring = false;
-        isMining = false;
-        currentHeatLevel = 0f;
-        firingBar.SetMaxHeat(maxHeatLevel);
+        playerConfig = config;
     }
 
     public void SetInputShoot(float shoot)
@@ -63,6 +58,21 @@ public class Weapon : MonoBehaviour
     public void SetInputMine(float mine)
     {
         inputMining = mine;
+    }
+
+    private void Awake()
+    {
+        playerInput = GetComponent<PlayerInput>();
+        gameManager = GameManager.Instance;
+    }
+
+    private void Start()
+    {
+        nextFireTime = 0f;
+        isFiring = false;
+        isMining = false;
+        currentHeatLevel = 0f;
+        firingBar.SetMaxHeat(maxHeatLevel);
     }
 
     private void Update()
@@ -160,9 +170,18 @@ public class Weapon : MonoBehaviour
         }
     }
 
+
+
+
     public void Shoot(Transform firePoint)
     {
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+
+        Bullet bulletComponent = bullet.GetComponent<Bullet>();
+        if (bulletComponent != null)
+        {
+            bulletComponent.SetShooter(playerConfig.PlayerIndex, gameManager); // Pasar la referencia del GameManager al Bullet
+        }
 
         Rigidbody bulletRigidbody = bullet.GetComponent<Rigidbody>();
         if (bulletRigidbody != null)
@@ -175,6 +194,7 @@ public class Weapon : MonoBehaviour
 
         Destroy(bullet, 15f);
     }
+
 
     public void Mine()
     {

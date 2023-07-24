@@ -18,6 +18,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private PlayerControls controls;
 
+
     private void Awake()
     {
         carController = GetComponent<CarController>();
@@ -30,7 +31,12 @@ public class PlayerInputHandler : MonoBehaviour
         playerConfig = config;
         playerMesh.material = config.playerMaterial;
         config.Input.onActionTriggered += Input_onActionTriggered;
-    }   
+
+        weapon.SetPlayerConfiguration(config);
+
+        // Asignar el PlayerUI a la configuración del jugador
+        playerConfig.PlayerUI = this.gameObject; // O utiliza el objeto de la UI del jugador si está en otro GameObject
+    }
 
     private void Input_onActionTriggered(CallbackContext obj)
     {

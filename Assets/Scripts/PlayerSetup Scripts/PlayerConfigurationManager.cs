@@ -71,4 +71,13 @@ public class PlayerConfiguration
     public int PlayerIndex { get; private set; }
     public bool isReady { get; set; }
     public Material playerMaterial {get; set;}
+
+    public Weapon PlayerWeapon { get; private set; }
+
+    public GameObject PlayerUI { get; set; }
+
+    public void SetPlayerWeapon(Weapon weapon)
+    {
+        PlayerWeapon = weapon;
+    }
 }

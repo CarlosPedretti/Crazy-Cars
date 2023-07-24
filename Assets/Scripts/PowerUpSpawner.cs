@@ -43,19 +43,19 @@ public class PowerUpSpawner : MonoBehaviour
     {
         if (powerUps.Count == 0)
         {
-            Debug.LogWarning("La lista de PowerUps está vacía.");
+            //Debug.LogWarning("La lista de PowerUps está vacía.");
             return;
         }
 
         if (spawnPoints.Count == 0)
         {
-            Debug.LogWarning("No hay puntos de spawn disponibles.");
+            //Debug.LogWarning("No hay puntos de spawn disponibles.");
             return;
         }
 
         if (spawnedPowerUps.Count >= maxPowerUps)
         {
-            Debug.LogWarning("Se ha alcanzado la cantidad máxima de PowerUps en la escena.");
+            //Debug.LogWarning("Se ha alcanzado la cantidad máxima de PowerUps en la escena.");
             return;
         }
 
@@ -88,7 +88,7 @@ public class PowerUpSpawner : MonoBehaviour
         if (spawnedPowerUps.Contains(powerUp))
         {
             spawnedPowerUps.Remove(powerUp);
-            Destroy(powerUp);
+            //Destroy(powerUp);
 
 
             currentCooldown = Random.Range(minSpawnCooldown, maxSpawnCooldown);

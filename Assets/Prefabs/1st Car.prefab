@@ -471,7 +471,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!65 &6348704467542042939
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -512,6 +512,7 @@ MonoBehaviour:
   deathPrefabDestroyTime: 4
   playerDestroyDelay: 0.1
   dieDelay: 0
+  respawnTime: 10
   healthBar: {fileID: 4892450094631068166}
   smokeParticles: {fileID: 1066296202900908135}
   fireParticles: {fileID: 6264005317114704254}
@@ -554,6 +555,7 @@ MonoBehaviour:
     type: 3}
   flashPrefabDestroyTime: 0.1
   firingBar: {fileID: 2665874725597665090}
+  gameManager: {fileID: 0}
 --- !u!114 &1447637262909876072
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -99,8 +99,6 @@ public class CarController : MonoBehaviour
     {
         currentAcceleration = isAccelerating ? forwardSpeed : 0f;
 
-        Debug.Log("ForwardSpeed = " + forwardSpeed);
-        Debug.Log("isAccelerating = " + isAccelerating);
 
 
         rearLeftWheelCollider.motorTorque = moveDirection.y * currentAcceleration;

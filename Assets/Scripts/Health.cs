@@ -13,6 +13,9 @@ public class Health : MonoBehaviour
     public float playerDestroyDelay;
     public float dieDelay;
 
+    public float respawnTime = 5f; // Tiempo en segundos para reaparecer
+    private bool isRespawning = false;
+
     [SerializeField] private HealthBar healthBar;
 
     public ParticleSystem smokeParticles;
@@ -25,6 +28,10 @@ public class Health : MonoBehaviour
         healthBar.SetMaxHealth(maxHealth);
     }
 
+    public int GetCurrentHealth()
+    {
+        return currentHealth;
+    }
 
     public void TakeDamage(int damageAmount)
     {
@@ -32,8 +39,9 @@ public class Health : MonoBehaviour
         healthBar.SetHealth(currentHealth);
         if (currentHealth <= 0)
         {
-            Debug.Log("Vehiculo destruido");
-            Invoke("Die", dieDelay);
+            //Invoke("Die", dieDelay);
+            PlayerDied();
+
         }
     }
 
@@ -48,6 +56,47 @@ public class Health : MonoBehaviour
             currentHealth = maxHealth;
 
         }
+    }
+
+    public void PlayerDied()
+    {
+        if (!isRespawning)
+        {
+
+            if (deathPrefab != null)
+            {
+                GameObject deathInstance = Instantiate(deathPrefab, transform.position, transform.rotation);
+                Destroy(deathInstance, deathPrefabDestroyTime);
+            }
+
+            // Desactivar el objeto del jugador y comenzar el proceso de reaparición
+            gameObject.SetActive(false);
+            Invoke("RespawnPlayer", respawnTime);
+        }
+    }
+
+    private void RespawnPlayer()
+    {
+        // Buscar el componente RespawnPoint en el objeto
+        RespawnPoint respawnPoint = GetComponent<RespawnPoint>();
+
+        currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
+
+        if (respawnPoint != null)
+        {
+            // Usar la respawnPosition del componente RespawnPoint como punto de respawn
+            transform.position = respawnPoint.respawnPosition;
+            transform.rotation = respawnPoint.respawnRotation;
+        }
+        else
+        {
+            // Si no se encuentra el componente RespawnPoint, simplemente reiniciar la posición del jugador
+            transform.position = Vector3.zero;
+        }
+
+        gameObject.SetActive(true);
+        isRespawning = false;
     }
 
     public void Die()
