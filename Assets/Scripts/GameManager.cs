@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameManager : MonoBehaviour
@@ -10,11 +11,16 @@ public class GameManager : MonoBehaviour
     private float currentTime;
     private bool isCounting = false;
 
+
+    [SerializeField] private GameObject GameOverScreen;
+    [SerializeField] private TMP_Text playerNameText;
+    [SerializeField] private TMP_Text playerScoreText;
+
     public TMP_Text timerText;
 
     // Variables para llevar el registro de los puntajes de los jugadores
     private Dictionary<int, int> playerScores = new Dictionary<int, int>();
-    private List<PlayerConfiguration> playerConfigurations = new List<PlayerConfiguration>(); // Agrega esta línea
+    private List<PlayerConfiguration> playerConfigurations = new List<PlayerConfiguration>();
 
     public int maxScorePoints;
 
@@ -23,21 +29,18 @@ public class GameManager : MonoBehaviour
 
     PlayerConfiguration playerConfiguration;
 
-    // Variable estática para mantener la referencia a la única instancia del GameManager
+
     private static GameManager instance;
 
-    // Propiedad pública para acceder a la única instancia del GameManager desde otros scripts
+
     public static GameManager Instance
     {
         get
         {
-            // Si la instancia no existe, intentamos encontrarla en la escena
             if (instance == null)
             {
                 instance = FindObjectOfType<GameManager>();
             }
-
-            // Si aún no se encuentra la instancia, lanzamos una advertencia
             if (instance == null)
             {
                 Debug.LogWarning("No se encontró el GameManager en la escena. Asegúrate de tener un objeto GameManager en la escena.");
@@ -70,10 +73,64 @@ public class GameManager : MonoBehaviour
                 currentTime = 0f;
                 UpdateTimerText();
                 StopCounting();
+                GameOver();
                 // Aquí puedes realizar acciones cuando el tiempo se haya agotado
             }
         }
     }
+
+
+
+    private void GameOver()
+    {
+        // Detener la escena
+        Time.timeScale = 0f;
+
+        // Buscar el jugador con el mayor puntaje
+        int highestScore = 0;
+        List<int> playerIndicesWithHighestScore = new List<int>();
+
+        foreach (var playerIndex in playerScores.Keys)
+        {
+            int playerScore = GetScore(playerIndex);
+
+            if (playerScore > highestScore)
+            {
+                highestScore = playerScore;
+                playerIndicesWithHighestScore.Clear();
+                playerIndicesWithHighestScore.Add(playerIndex);
+            }
+            else if (playerScore == highestScore)
+            {
+                playerIndicesWithHighestScore.Add(playerIndex);
+            }
+        }
+
+        // Mostrar la interfaz de usuario con el resultado del juego
+        if (playerIndicesWithHighestScore.Count == 1)
+        {
+            // Solo un jugador tiene el puntaje más alto, muestra su nombre como ganador
+            int playerIndex = playerIndicesWithHighestScore[0];
+            PlayerConfiguration playerWithHighestScore = GetPlayerConfiguration(playerIndex);
+            if (playerWithHighestScore != null)
+            {
+                string playerName = "Player " + (playerWithHighestScore.PlayerIndex + 1).ToString();
+                int playerScore = GetScore(playerWithHighestScore.PlayerIndex);
+                GameOverScreen.SetActive(true);
+                playerNameText.text = playerName + " wins!";
+                playerScoreText.text = "With a score of: " + playerScore;
+            }
+        }
+        else
+        {
+            // Hay empate, muestra un mensaje de empate
+            GameOverScreen.SetActive(true);
+            playerNameText.text = "It's a draw.";
+            playerScoreText.text = "You should try again!";
+        }
+    }
+
+
 
 
     public void StartCounting()
@@ -174,5 +231,28 @@ public class GameManager : MonoBehaviour
             // Si el jugador no existe en el diccionario, devolver un puntaje predeterminado (como 0)
             return 0;
         }
+    }
+
+    public void RestartScene()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
+        Time.timeScale = 1f;
+    }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene("Menu");
+        GameObject playerConfigManager = GameObject.Find("PlayerConfigurationManager");
+        if (playerConfigManager != null)
+        {
+            playerConfigManager.SetActive(false);
+        }
+    }
+
+    public void Exit()
+    {
+        Debug.Log("Exit...");
+        Application.Quit();
     }
 }

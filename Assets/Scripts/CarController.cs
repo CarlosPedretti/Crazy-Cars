@@ -27,6 +27,10 @@ public class CarController : MonoBehaviour
     private bool isBreaking;
     private bool isAccelerating;
 
+    //Efectos
+    public TrailRenderer[] trails;
+    //public ParticleSystem smoke;
+
     [SerializeField] float downForce = 0;
 
     [SerializeField] private float maxForardSpeed;
@@ -78,6 +82,7 @@ public class CarController : MonoBehaviour
         HandleSteering();
         UpdateWheels();
         ApplyBreaking();
+        Effects();
 
         rb.AddRelativeForce(Vector3.down * downForce, ForceMode.Force);
     }
@@ -93,6 +98,30 @@ public class CarController : MonoBehaviour
         isBreaking = inputBraking == 1.0f;
         isAccelerating = inputAcceleration == 1.0f;
 
+    }
+
+    private void Effects()
+    {
+        if (moveDirection.x != 0)
+        {
+            foreach (var trail in trails)
+            {
+                trail.emitting = true;
+            }
+
+            /*var emission = smoke.emission;
+            emission.rateOverTime = 10f;*/
+        }
+        else
+        {
+            foreach (var trail in trails)
+            {
+                trail.emitting = false;
+            }
+
+            /*var emission = smoke.emission;
+            emission.rateOverTime = 0f;*/
+        }
     }
 
     private void HandleMotor()

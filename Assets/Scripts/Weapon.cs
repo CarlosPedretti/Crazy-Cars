@@ -45,6 +45,10 @@ public class Weapon : MonoBehaviour
 
     private PlayerConfiguration playerConfig; // Referencia al PlayerConfiguration del jugador
 
+    public float vibrationDuration = 10f;
+    public float vibrationHighFrecuency = 0.6f;
+    public float vibrationLowFrecuency = 0.4f;
+
     public void SetPlayerConfiguration(PlayerConfiguration config)
     {
         playerConfig = config;
@@ -75,6 +79,7 @@ public class Weapon : MonoBehaviour
         firingBar.SetMaxHeat(maxHeatLevel);
     }
 
+
     private void Update()
     {
         //float FireInput = playerInput.actions["Shoot"].ReadValue<float>();
@@ -90,11 +95,14 @@ public class Weapon : MonoBehaviour
             isFiring = true;
             nextFireTime = Time.time;
             FireBurst();
+            //StartVibration();
         }
 
         if (FireInput == 0)
         {
             isFiring = false;
+            //StopVibration();
+
         }
 
         if (MineInput > 0 && !isMining)
@@ -113,6 +121,7 @@ public class Weapon : MonoBehaviour
         {
             currentHeatLevel -= heatDecreaseRate * Time.deltaTime;
             currentHeatLevel = Mathf.Clamp(currentHeatLevel, 0f, maxHeatLevel);
+
         }
 
         float heatThreshold = maxHeatLevel * 0.8f;
@@ -193,7 +202,27 @@ public class Weapon : MonoBehaviour
         Destroy(flashInstance, flashPrefabDestroyTime);
 
         Destroy(bullet, 15f);
+
+
     }
+
+    /*public void StartVibration()
+    {
+        if (playerConfig != null && playerConfig.PlayerGamepad != null)
+        {
+            playerConfig.PlayerGamepad.SetMotorSpeeds(vibrationLowFrecuency, vibrationHighFrecuency);
+            Debug.Log("Vibrando!!!!");
+        }
+    }
+
+    public void StopVibration()
+    {
+        if (playerConfig != null && playerConfig.PlayerGamepad != null)
+        {
+            playerConfig.PlayerGamepad.SetMotorSpeeds(0, 0);
+            Debug.Log("NO VIBRO");
+        }
+    }*/
 
 
     public void Mine()
