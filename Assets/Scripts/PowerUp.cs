@@ -66,6 +66,12 @@ public class PowerUp : MonoBehaviour
                 {
                     childRenderer.enabled = false;
                 }
+
+                Light[] lights = GetComponentsInChildren<Light>();
+                foreach (Light childLight in lights)
+                {
+                    childLight.enabled = false;
+                }
             }
 
             if (spawner != null)
