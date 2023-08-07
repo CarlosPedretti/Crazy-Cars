@@ -79,7 +79,7 @@ public class PowerUpSpawner : MonoBehaviour
             powerUp.SetSpawner(this);
         }
 
-        // Eliminar el punto de spawn utilizado
+
         spawnPoints.RemoveAt(randomSpawnIndex);
     }
 

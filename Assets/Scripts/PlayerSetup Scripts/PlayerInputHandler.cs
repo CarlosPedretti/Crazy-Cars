@@ -37,8 +37,8 @@ public class PlayerInputHandler : MonoBehaviour
 
         weapon.SetPlayerConfiguration(config);
 
-        // Asignar el PlayerUI a la configuración del jugador
-        playerConfig.PlayerUI = this.gameObject; // O utiliza el objeto de la UI del jugador si está en otro GameObject
+       
+        playerConfig.PlayerUI = this.gameObject; 
 
         InputDevice device = config.Input.devices.FirstOrDefault(d => d is Gamepad);
         if (device != null)
@@ -115,7 +115,7 @@ public class PlayerInputHandler : MonoBehaviour
         }
         else
         {
-            // Si el jugador dejó de disparar o el Gamepad no está disponible, detener la vibración
+           
             StopVibration();
         }
 

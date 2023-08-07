@@ -14,7 +14,7 @@ public class Health : MonoBehaviour
     public float playerDestroyDelay;
     public float dieDelay;
 
-    public float respawnTime = 5f; // Tiempo en segundos para reaparecer
+    public float respawnTime = 5f; 
     private bool isRespawning = false;
 
     [SerializeField] private HealthBar healthBar;
@@ -97,13 +97,13 @@ public class Health : MonoBehaviour
 
         if (respawnPoint != null)
         {
-            // Usar la respawnPosition del componente RespawnPoint como punto de respawn
+
             transform.position = respawnPoint.respawnPosition;
             transform.rotation = respawnPoint.respawnRotation;
         }
         else
         {
-            // Si no se encuentra el componente RespawnPoint, simplemente reiniciar la posición del jugador
+
             transform.position = Vector3.zero;
         }
 

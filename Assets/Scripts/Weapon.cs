@@ -95,13 +95,11 @@ public class Weapon : MonoBehaviour
             isFiring = true;
             nextFireTime = Time.time;
             FireBurst();
-            //StartVibration();
         }
 
         if (FireInput == 0)
         {
             isFiring = false;
-            //StopVibration();
 
         }
 
@@ -189,7 +187,7 @@ public class Weapon : MonoBehaviour
         Bullet bulletComponent = bullet.GetComponent<Bullet>();
         if (bulletComponent != null)
         {
-            bulletComponent.SetShooter(playerConfig.PlayerIndex, gameManager); // Pasar la referencia del GameManager al Bullet
+            bulletComponent.SetShooter(playerConfig.PlayerIndex, gameManager); 
         }
 
         Rigidbody bulletRigidbody = bullet.GetComponent<Rigidbody>();
@@ -205,24 +203,6 @@ public class Weapon : MonoBehaviour
 
 
     }
-
-    /*public void StartVibration()
-    {
-        if (playerConfig != null && playerConfig.PlayerGamepad != null)
-        {
-            playerConfig.PlayerGamepad.SetMotorSpeeds(vibrationLowFrecuency, vibrationHighFrecuency);
-            Debug.Log("Vibrando!!!!");
-        }
-    }
-
-    public void StopVibration()
-    {
-        if (playerConfig != null && playerConfig.PlayerGamepad != null)
-        {
-            playerConfig.PlayerGamepad.SetMotorSpeeds(0, 0);
-            Debug.Log("NO VIBRO");
-        }
-    }*/
 
 
     public void Mine()

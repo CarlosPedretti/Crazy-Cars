@@ -12,12 +12,10 @@ public class LevelInitializer : MonoBehaviour
     private GameObject playerPrefab;
 
     [SerializeField]
-    private GameObject playerUIPrefab; // El prefab de la UI para cada jugador
+    private GameObject playerUIPrefab; 
 
     [SerializeField]
-    private Transform canvasTransform; // Referencia al transform del Canvas que contiene las UI de los jugadores
-
-    // Start is called before the first frame update
+    private Transform canvasTransform; 
 
 
     void Start()
@@ -28,18 +26,15 @@ public class LevelInitializer : MonoBehaviour
             var player = Instantiate(playerPrefab, playerSpawns[i].position, playerSpawns[i].rotation, gameObject.transform);
             player.GetComponent<PlayerInputHandler>().InitializePlayer(playerConfigs[i]);
 
-            var playerUI = Instantiate(playerUIPrefab, canvasTransform); // Instanciar la UI y establecer el Canvas como padre
+            var playerUI = Instantiate(playerUIPrefab, canvasTransform); 
             player.GetComponent<PlayerInputHandler>().InitializePlayer(playerConfigs[i]);
 
             playerConfigs[i].PlayerUI = playerUI;
 
-            // Agregar el jugador al GameManager
             GameManager.Instance.AddPlayer(playerConfigs[i]);
 
-            // Obtener referencia al script PlayerUIScoreUpdater
             var scoreUpdater = playerUI.GetComponent<PlayerUIScoreUpdater>();
 
-            // Establecer el nombre y puntaje usando el PlayerUIScoreUpdater
             scoreUpdater.UpdatePlayerUI("Player " + (i + 1).ToString(), GameManager.Instance.GetScore(playerConfigs[i].PlayerIndex));
 
             var respawnPoint = player.AddComponent<RespawnPoint>();

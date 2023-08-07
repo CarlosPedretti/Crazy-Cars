@@ -43,15 +43,13 @@ public class PowerUp : MonoBehaviour
                     valuesSaved = true; 
                 }
 
-                if (revertChanges == null) // Comprueba si revertChanges no está en ejecución
+                if (revertChanges == null) 
                 {
-                    // Aplicar los cambios del PowerUp al componente Weapon
-                    // Resto del código existente...
+
 
                     revertChanges = StartCoroutine(RevertChanges(weapon, originalQuantityOfMines, originalMaxHeatLevel, originalHeatIncreasePerShot, originalHeatDecreaseRate, originalBulletForce, originalFireRate, originalBulletsPerBurst, originalFirePoints));
                 }
 
-                //Aplicar los cambios del PowerUp al componente Weapon
                 weapon.bulletForce = powerUpData.bulletForce;
                 weapon.fireRate = powerUpData.fireRate;
                 weapon.bulletsPerBurst = powerUpData.bulletsPerBurst;
@@ -81,7 +79,6 @@ public class PowerUp : MonoBehaviour
 
     private void SaveOriginalValues(Weapon weapon)
     {
-        // Guardar los valores originales del componente Weapon
         originalBulletForce = weapon.bulletForce;
         originalFireRate = weapon.fireRate;
         originalBulletsPerBurst = weapon.bulletsPerBurst;
@@ -104,7 +101,6 @@ public class PowerUp : MonoBehaviour
             yield return null;
         }
 
-        // Asegúrate de que los cambios solo se reviertan si efectivamente se había activado el Coroutine
         if (revertChanges != null)
         {
             weapon.bulletForce = originalBulletForce;
