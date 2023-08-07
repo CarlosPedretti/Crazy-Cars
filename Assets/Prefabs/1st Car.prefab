@@ -448,7 +448,7 @@ Transform:
   - {fileID: 7110363220967058699}
   - {fileID: 841583272245200644}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &7389598674555993122
 Rigidbody:
@@ -583,6 +583,9 @@ MonoBehaviour:
   flashPrefabDestroyTime: 0.1
   firingBar: {fileID: 2665874725597665090}
   gameManager: {fileID: 0}
+  vibrationDuration: 0.2
+  vibrationHighFrecuency: 0.5
+  vibrationLowFrecuency: 0.2
 --- !u!114 &1447637262909876072
 MonoBehaviour:
   m_ObjectHideFlags: 0

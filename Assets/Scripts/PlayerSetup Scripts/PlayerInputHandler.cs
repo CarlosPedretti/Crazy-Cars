@@ -18,6 +18,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     private PlayerControls controls;
 
+    private Gamepad playerGamepad;
+    private float shootValue = 0.0f;
+
 
     private void Awake()
     {
@@ -36,6 +39,14 @@ public class PlayerInputHandler : MonoBehaviour
 
         // Asignar el PlayerUI a la configuración del jugador
         playerConfig.PlayerUI = this.gameObject; // O utiliza el objeto de la UI del jugador si está en otro GameObject
+
+        InputDevice device = config.Input.devices.FirstOrDefault(d => d is Gamepad);
+        if (device != null)
+        {
+            playerGamepad = (Gamepad)device;
+            Debug.Log("Gamepad connected for player: " + config.PlayerIndex);
+        }
+
     }
 
     private void Input_onActionTriggered(CallbackContext obj)
@@ -91,10 +102,23 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnShoot(CallbackContext context)
     {
+        shootValue = context.ReadValue<float>();
+
         if (weapon != null)
         {
             weapon.SetInputShoot(context.ReadValue<float>() == 1 ? 1.0f : 0.0f);
         }
+
+        if (playerGamepad != null && shootValue > 0)
+        {
+            StartVibration();
+        }
+        else
+        {
+            // Si el jugador dejó de disparar o el Gamepad no está disponible, detener la vibración
+            StopVibration();
+        }
+
     }
 
     public void OnMine(CallbackContext context)
@@ -102,6 +126,27 @@ public class PlayerInputHandler : MonoBehaviour
         if (weapon != null)
         {
             weapon.SetInputMine(context.ReadValue<float>() == 1 ? 1.0f : 0.0f);
+        }
+    }
+
+    private float vibrationHighFrequency = 0.8f;
+    private float vibrationLowFrequency = 0.5f;
+
+    public void StartVibration()
+    {
+        if (playerGamepad != null)
+        {
+            playerGamepad.SetMotorSpeeds(vibrationLowFrequency, vibrationHighFrequency);
+
+        }
+    }
+
+
+    public void StopVibration()
+    {
+        if (playerGamepad != null)
+        {
+            playerGamepad.SetMotorSpeeds(0f, 0f);
         }
     }
 

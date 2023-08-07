@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class Health : MonoBehaviour
 {
@@ -20,6 +21,9 @@ public class Health : MonoBehaviour
 
     public ParticleSystem smokeParticles;
     public ParticleSystem fireParticles;
+
+    //public float vibrationDuration = 3.0f;
+    //public float vibrationAmplitude = 1.0f;
 
 
     void Start()
@@ -62,6 +66,8 @@ public class Health : MonoBehaviour
     {
         if (!isRespawning)
         {
+            //Gamepad.current?.SetMotorSpeeds(vibrationAmplitude, vibrationAmplitude);
+            //Invoke("StopVibration", vibrationDuration);
 
             if (deathPrefab != null)
             {
@@ -74,6 +80,12 @@ public class Health : MonoBehaviour
             Invoke("RespawnPlayer", respawnTime);
         }
     }
+
+    /*private void StopVibration()
+    {
+        // Detener la vibración del mando
+        Gamepad.current?.SetMotorSpeeds(0, 0);
+    }*/
 
     private void RespawnPlayer()
     {
