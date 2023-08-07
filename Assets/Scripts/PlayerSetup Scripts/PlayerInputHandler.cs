@@ -109,7 +109,7 @@ public class PlayerInputHandler : MonoBehaviour
             weapon.SetInputShoot(context.ReadValue<float>() == 1 ? 1.0f : 0.0f);
         }
 
-        if (playerGamepad != null && shootValue > 0)
+        if (playerGamepad != null && shootValue == 1f)
         {
             StartVibration();
         }
